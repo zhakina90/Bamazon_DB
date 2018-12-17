@@ -21,6 +21,7 @@ connection.connect(function (error) {
 
     console.log('connected as id ' + connection.threadId);
 });
+table();
 function userChoice() {
     connection.query("select * from products;", function (err, res) {
         // console.log(res);
@@ -30,6 +31,7 @@ function userChoice() {
             // console.log(`${res[i].item_id}. ${res[i].product_name}. ${res[i].stock_quantity}`);
 
         }
+
         inquirer.prompt([
             {
                 message: "What is the ID of the product?",
@@ -44,6 +46,7 @@ function userChoice() {
 
             }
         ]).then(function (answers) {
+
             //displaying the result of user input
             var id = answers.item_id;
             var quantity = answers.unit_products;
@@ -57,7 +60,7 @@ function userChoice() {
 
 
             connection.query("select * from products where item_id =" + id, function (err, response) {
-                console.log(response);
+                // console.log(response);
                 if (err) throw err;
                 //checking if we have user's request in stock
                 if (response[0].stock_quantity - quantity <= 0) {
@@ -67,11 +70,12 @@ function userChoice() {
 
                 } else {
                     console.log("*********************YOUR ORDER IS  SUCCESSFULLY PLACED!!!!****************");
-                    // connection.query('UPDATE products SET stock_quantity=? WHERE item_id=?', [response[0].stock_quantity - quantity, id],
-                    //     function (error, resp) {
-                    //         if (error) throw error;
-                    //         // console.log(resp);
-                    //     });
+                    connection.query('UPDATE products SET stock_quantity=? WHERE item_id=?', [response[0].stock_quantity - quantity, id],
+                        function (error, resp) {
+                            if (error) throw error;
+                            // console.log(resp);
+                            table();
+                        });
 
                 }
 
@@ -82,31 +86,15 @@ function userChoice() {
 
     });
 }
+function table() {
+    connection.query("select * from products;", function (er, data) {
+        if (er) throw er;
+        var displayDB = cTable.getTable(data);
 
 
-
-
-//applie npm console.log to display data in better way
-var values = [
-    [1, "Camera", "Electronics", 60, 80],
-    [2, "Printer", "Electronics", 45, 50],
-    [3, "Red Skirt", "Clothes", 20, 100],
-    [4, "White Socks", "Clothes", 4.5, 150],
-    [5, "Black Shirt", "Clothes", 12.4, 50],
-    [6, "Dums", "Toys", 3.4, 200],
-    [7, "Barbie", "Toys", 34.7, 500],
-    [8, "Cars", "Toys", 1.34, 290],
-    [9, "Pillow", "Home", 7.90, 140],
-    [10, "Blanket", "Home", 10, 80],
-    [11, "Tide", "Household", 12.9, 400],
-    [12, "Dove Soap", "Household", 0.9, 1000],
-    [13, "Computer mouse", "Electronics", 5.67, 200],
-    [14, "Face Cream", "Beauty", 34.6, 40],
-    [15, "Red Lip-Stick", "Beauty", 10.00, 35],
-    [16, "Pink Blush", "Beauty", 24.7, 25]
-
-]
-console.table(["item_id", "product_name", "department_name", "price", "stock_quantity"], values);
+        console.table(displayDB);
+    });
+}
 
 
 userChoice();

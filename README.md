@@ -1,1 +1,2 @@
 # Bamazon_DB
+*I created DB in MySQL called Bamazon_DB where user can view different typeof products. Each item has unique ID by which users can find certain item. User needs to make to input from the displayed table, which are provide ID of the product and how many of them he/she want. If the user's request exeeds more than the store have in stock, the function simply won't execute.* Please click to see [My demo for Bamazon_DB](https://www.youtube.com/watch?v=giqB79movUM)
